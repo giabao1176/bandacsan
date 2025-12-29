@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import vn.edu.hcmute.springboot3_4_12.repository.UserRepository;
 import vn.edu.hcmute.springboot3_4_12.entity.User;
+import vn.edu.hcmute.springboot3_4_12.service.IUserService;
+import vn.edu.hcmute.springboot3_4_12.dto.UserRequestDTO;
 import java.util.Optional;
 
 @Controller
@@ -33,6 +35,9 @@ public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private IUserService userService;
+
     @PostMapping("/perform_login")
     public String performLogin(@RequestParam String username,
                                @RequestParam String password,
@@ -52,9 +57,50 @@ public class LoginController {
         HttpSession session = request.getSession(true);
         session.setAttribute("user", user);
 
-        if ("ADMIN".equals(user.getRole())) {
+        // Redirect theo role
+        String role = user.getRole();
+        if ("ADMIN".equals(role)) {
             return "redirect:/admin/home";
+        } else if ("VENDOR".equals(role)) {
+            return "redirect:/vendor/dashboard";
+        } else {
+            // USER/CUSTOMER
+            return "redirect:/user/home";
         }
-        return "redirect:/";
+    }
+
+    @PostMapping("/register")
+    public String performRegister(@RequestParam String username,
+                                  @RequestParam String password,
+                                  @RequestParam String email,
+                                  @RequestParam(required = false) String phone,
+                                  HttpServletRequest request) {
+        try {
+            // Tạo DTO từ form data
+            UserRequestDTO dto = new UserRequestDTO();
+            dto.setUsername(username);
+            dto.setPassword(password);
+            dto.setEmail(email);
+            dto.setRole("CUSTOMER"); // Mặc định là CUSTOMER
+            
+            // Gọi service để đăng ký
+            userService.register(dto);
+            
+            // Đăng ký thành công, redirect về login
+            return "redirect:/login?success=Đăng ký thành công! Vui lòng đăng nhập.";
+        } catch (Exception e) {
+            // Nếu có lỗi (ví dụ: username đã tồn tại)
+            request.setAttribute("message", e.getMessage() != null ? e.getMessage() : "Có lỗi xảy ra khi đăng ký");
+            return "register";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/login";
     }
 }
