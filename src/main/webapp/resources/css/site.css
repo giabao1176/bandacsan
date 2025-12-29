@@ -1,0 +1,8 @@
+/* Minimal custom styling to improve spacing and readability */
+body { background:#f8f9fa; }
+header h5, header h4 { margin:0; }
+.container { max-width:1180px; }
+.card-img-top { max-height:200px; object-fit:cover; }
+footer .small { color: #cccccc; margin-top:4px; }
+button, .btn { border-radius:6px; }
+@media (max-width:576px) { .container { padding:0 12px; } }
