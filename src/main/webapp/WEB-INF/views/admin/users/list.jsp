@@ -1,118 +1,97 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người dùng - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<jsp:include page="/WEB-INF/common/header.jsp" />
+<div class="container-fluid mt-4">
+    <h1 class="mb-4"><i class="bi bi-people"></i> Quản lý Người dùng</h1>
+    
+    <!-- Stats Card -->
+    <div class="row mb-4">
+        <div class="col-md-12 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> Tổng số người dùng</h5>
+                    <h3 class="mb-0">${not empty users ? fn:length(users) : 0}</h3>
+                    <small>Tổng số người dùng trong hệ thống</small>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">Quản lý Người dùng</h3>
-                    <a href="${pageContext.request.contextPath}/admin/users/create" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> Thêm mới
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Danh sách người dùng</h5>
+                    <a href="<c:url value='/admin/users/create'/>" class="btn btn-outline-primary">
+                        <i class="bi bi-person-plus"></i> Thêm mới
                     </a>
                 </div>
                 <div class="card-body">
                     <!-- Thông báo thành công -->
                     <c:if test="${not empty success}">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle"></i> ${success}
+                            <i class="bi bi-check-circle"></i> ${success}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     </c:if>
 
-                    <!-- Form tìm kiếm -->
-                    <form method="get" action="${pageContext.request.contextPath}/admin/users" class="mb-4">
-                        <div class="row">
-                            <div class="col-md-10">
-                                <input type="text" name="q" class="form-control"
-                                       placeholder="Tìm kiếm theo tên người dùng..."
-                                       value="${q}">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-info w-100">
-                                    <i class="fas fa-search"></i> Tìm kiếm
-                                </button>
-                            </div>
+                    <!-- Thông báo lỗi -->
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle"></i> ${error}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
-                    </form>
+                    </c:if>
 
                     <!-- Bảng danh sách -->
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <thead class="table-dark">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
                             <tr>
-                                <th width="15%">Username</th>
-                                <th width="20%">Email</th>
-                                <th width="15%">Họ tên</th>
-                                <th width="12%">Số điện thoại</th>
-                                <th width="10%">Admin</th>
-                                <th width="10%">Trạng thái</th>
-                                <th width="18%">Thao tác</th>
+                                <th width="5%">ID</th>
+                                <th width="20%">Username</th>
+                                <th width="30%">Email</th>
+                                <th width="15%">Vai trò</th>
+                                <th width="30%">Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
                             <c:choose>
                                 <c:when test="${empty users}">
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            <i class="fas fa-users fa-3x mb-3 d-block"></i>
-                                            Không có dữ liệu
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                                            <h4 class="mt-3 text-muted">Chưa có dữ liệu</h4>
+                                            <p class="text-muted">Bắt đầu quản lý hệ thống bằng cách thêm dữ liệu mới.</p>
                                         </td>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="user" items="${users}">
                                         <tr>
+                                            <td>${user.id}</td>
+                                            <td><strong>${user.username}</strong></td>
+                                            <td><c:out value="${user.email}"/></td>
+                                            <td><c:out value="${user.role}"/></td>
                                             <td>
-                                                <strong><i class="fas fa-user"></i> ${user.username}</strong>
-                                            </td>
-                                            <td>
-                                                <c:if test="${not empty user.email}">
-                                                    <i class="fas fa-envelope text-muted"></i> ${user.email}
-                                                </c:if>
-                                            </td>
-                                            <td>${user.fullname}</td>
-                                            <td>
-                                                <c:if test="${not empty user.phone}">
-                                                    <i class="fas fa-phone text-muted"></i> ${user.phone}
-                                                </c:if>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${user.admin}">
-                                                            <span class="badge bg-danger">
-                                                                <i class="fas fa-user-shield"></i> Admin
-                                                            </span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                            <span class="badge bg-secondary">
-                                                                <i class="fas fa-user"></i> User
-                                                            </span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${user.active}">
-                                                            <span class="badge bg-success">
-                                                                <i class="fas fa-check"></i> Hoạt động
-                                                            </span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                            <span class="badge bg-warning text-dark">
-                                                                <i class="fas fa-times"></i> Ngưng
-                                                            </span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <a href="${pageContext.request.contextPath}/admin/users/edit/${user.username}"
-                                                   class="btn btn-sm btn-warning" title="Sửa">
-                                                    <i class="fas fa-edit"></i> Sửa
+                                                <a href="<c:url value='/admin/users/edit/${user.username}'/>"
+                                                   class="btn btn-sm btn-outline-warning">
+                                                    <i class="bi bi-pencil"></i> Sửa
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-danger"
-                                                        onclick="confirmDelete('${user.username}')" title="Xóa">
-                                                    <i class="fas fa-trash"></i> Xóa
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        onclick="confirmDelete('${user.username}')">
+                                                    <i class="bi bi-trash"></i> Xóa
                                                 </button>
                                             </td>
                                         </tr>
@@ -123,15 +102,6 @@
                         </table>
                     </div>
 
-                    <!-- Thông tin tổng số -->
-                    <c:if test="${not empty users}">
-                        <div class="mt-3">
-                            <p class="text-muted">
-                                <i class="fas fa-info-circle"></i>
-                                Tổng số: <strong>${users.size()}</strong> người dùng
-                            </p>
-                        </div>
-                    </c:if>
                 </div>
             </div>
         </div>
@@ -139,7 +109,7 @@
 </div>
 
 <!-- Form xóa ẩn -->
-<form id="deleteForm" method="post" action="${pageContext.request.contextPath}/admin/users/delete">
+<form id="deleteForm" method="post" action="<c:url value='/admin/users/delete'/>">
     <input type="hidden" name="username" id="deleteUsername">
 </form>
 
@@ -151,3 +121,8 @@
         }
     }
 </script>
+</div>
+<jsp:include page="/WEB-INF/common/footer.jsp" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

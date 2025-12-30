@@ -1,16 +1,203 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm/Sửa sản phẩm - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<jsp:include page="/WEB-INF/common/header.jsp" />
+
 <div class="container mt-4">
-    <h2>Admin - Thêm / Sửa sản phẩm</h2>
-    <form method="post" action="/admin/products/save" enctype="multipart/form-data">
-        <!-- Simple form fields -->
-        <div class="mb-3">
-            <label class="form-label">Tên (VI)</label>
-            <input type="text" name="nameVi" class="form-control" />
+    <h2>
+        <i class="bi bi-box-seam"></i> 
+        <c:choose>
+            <c:when test="${not empty product}">Chỉnh sửa sản phẩm</c:when>
+            <c:otherwise>Thêm sản phẩm mới</c:otherwise>
+        </c:choose>
+    </h2>
+    
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> ${error}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Giá</label>
-            <input type="number" name="price" class="form-control" />
+    </c:if>
+    
+    <form method="post" enctype="multipart/form-data" id="productForm">
+        <input type="hidden" id="productId" value="${product.id}" />
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="nameVi" class="form-label">Tên (Tiếng Việt) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nameVi" name="nameVi" 
+                           value="${product.nameVi}" required />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="nameEn" class="form-label">Tên (Tiếng Anh)</label>
+                    <input type="text" class="form-control" id="nameEn" name="nameEn" 
+                           value="${product.nameEn}" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="descriptionVi" class="form-label">Mô tả (Tiếng Việt) <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="descriptionVi" name="descriptionVi" rows="3" required>${product.descriptionVi}</textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="descriptionEn" class="form-label">Mô tả (Tiếng Anh)</label>
+                    <textarea class="form-control" id="descriptionEn" name="descriptionEn" rows="3">${product.descriptionEn}</textarea>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="price" class="form-label">Giá <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control" id="price" name="price" 
+                           value="${product.price}" required min="0" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Tồn kho <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="stock" name="stock" 
+                           value="${product.stock}" required min="0" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="vendorId" class="form-label">Nhà bán hàng <span class="text-danger">*</span></label>
+                    <select class="form-select" id="vendorId" name="vendorId" required>
+                        <option value="">-- Chọn nhà bán hàng --</option>
+                        <c:forEach var="vendor" items="${vendors}">
+                            <option value="${vendor.id}" ${product.vendorId == vendor.id ? 'selected' : ''}>
+                                ${vendor.storeName} - ${vendor.username}
+                            </option>
+                        </c:forEach>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="categoryIds" class="form-label">Danh mục <span class="text-danger">*</span></label>
+                    <select class="form-select" id="categoryIds" name="categoryIds" multiple required>
+                        <c:forEach var="category" items="${categories}">
+                            <c:set var="selected" value="false" />
+                            <c:if test="${not empty selectedCategoryIds}">
+                                <c:forEach var="catId" items="${selectedCategoryIds}">
+                                    <c:if test="${catId == category.id}">
+                                        <c:set var="selected" value="true" />
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>
+                            <option value="${category.id}" ${selected ? 'selected' : ''}>${category.nameVi}</option>
+                        </c:forEach>
+                    </select>
+                    <small class="form-text text-muted">Giữ Ctrl (Cmd trên Mac) để chọn nhiều danh mục</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="files" class="form-label">Hình ảnh</label>
+                    <input type="file" class="form-control" id="files" name="files" multiple accept="image/*" />
+                    <c:if test="${not empty product.imageUrls}">
+                        <small class="form-text text-muted">Hình ảnh hiện tại:</small>
+                        <div class="mt-2">
+                            <c:forEach var="imgUrl" items="${product.imageUrls}">
+                                <img src="${imgUrl}" alt="Product" class="img-thumbnail me-2" style="max-width: 100px; max-height: 100px;" />
+                            </c:forEach>
+                        </div>
+                    </c:if>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-primary">Lưu</button>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save"></i> Lưu
+            </button>
+            <a href="<c:url value='/admin/products'/>" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Hủy
+            </a>
+        </div>
     </form>
 </div>
+
+<jsp:include page="/WEB-INF/common/footer.jsp" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const productId = document.getElementById('productId').value;
+        const isEdit = productId && productId !== '';
+        
+        // Tạo JSON object từ form
+        const productData = {
+            nameVi: document.getElementById('nameVi').value,
+            nameEn: document.getElementById('nameEn').value,
+            descriptionVi: document.getElementById('descriptionVi').value,
+            descriptionEn: document.getElementById('descriptionEn').value,
+            price: parseFloat(document.getElementById('price').value),
+            stock: parseInt(document.getElementById('stock').value),
+            vendorId: parseInt(document.getElementById('vendorId').value),
+            categoryIds: Array.from(document.getElementById('categoryIds').selectedOptions).map(opt => parseInt(opt.value))
+        };
+        
+        if (isEdit) {
+            // Update: Gửi PUT request với JSON
+            fetch('<c:url value="/admin/api/products"/>' + '/' + productId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(productData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '<c:url value="/admin/products"/>';
+                } else {
+                    response.text().then(text => {
+                        alert('Có lỗi xảy ra khi cập nhật sản phẩm: ' + text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi cập nhật sản phẩm');
+            });
+        } else {
+            // Create: Gửi POST request với FormData (có thể có file)
+            const formData = new FormData();
+            formData.append('product', JSON.stringify(productData));
+            
+            // Thêm files
+            const files = document.getElementById('files').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+            
+            fetch('<c:url value="/admin/api/products"/>', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '<c:url value="/admin/products"/>';
+                } else {
+                    response.text().then(text => {
+                        alert('Có lỗi xảy ra khi tạo sản phẩm: ' + text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tạo sản phẩm');
+            });
+        }
+    });
+</script>
+</body>
+</html>

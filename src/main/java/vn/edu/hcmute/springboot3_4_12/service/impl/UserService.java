@@ -75,7 +75,8 @@ public class UserService implements IUserService {
         if (dto.getRole() != null) user.setRole(dto.getRole());
 
         // Nếu có đổi mật khẩu thì phải mã hóa lại
-        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+        // Kiểm tra nếu password là "_unchanged_" thì không cập nhật
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty() && !dto.getPassword().equals("_unchanged_")) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 

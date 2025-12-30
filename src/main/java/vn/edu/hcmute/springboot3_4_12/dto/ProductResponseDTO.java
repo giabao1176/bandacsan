@@ -20,6 +20,7 @@ public class ProductResponseDTO {
     private String descriptionEn;
     private Double price;
     private Integer stock;
+    private Long vendorId;
     private String vendorName;
     private List<String> categories;
     private List<String> imageUrls;

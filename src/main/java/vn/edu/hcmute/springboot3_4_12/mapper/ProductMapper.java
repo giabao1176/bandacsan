@@ -16,6 +16,7 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
     @Mapping(target = "categories", expression = "java(mapCategoriesToNames(product.getCategories()))")
     @Mapping(target = "vendorName", source = "vendor.storeName")
+    @Mapping(target = "vendorId", expression = "java(product.getVendor() != null ? product.getVendor().getId() : null)")
     ProductResponseDTO toResponseDTO(Product product);
 
     default List<String> mapCategoriesToNames(List<Category> categories) {

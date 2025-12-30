@@ -1,9 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<jsp:include page="/WEB-INF/common/header.jsp" />
 <div class="container mt-5">
-    <h2>Add New User</h2>
+    <h2>Thêm người dùng mới</h2>
     <form action="${pageContext.request.contextPath}/admin/users/create" method="post">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -17,10 +15,17 @@
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" name="password" id="password" required>
         </div>
-        <button type="submit" class="btn btn-success">Save</button>
-        <a href="${pageContext.request.contextPath}/admin/users" class="btn btn-secondary">Cancel</a>
+        <div class="mb-3">
+            <label for="role" class="form-label">Vai trò</label>
+            <select class="form-select" name="role" id="role">
+                <option value="CUSTOMER">CUSTOMER</option>
+                <option value="ADMIN">ADMIN</option>
+                <option value="VENDOR">VENDOR</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Lưu</button>
+        <a href="${pageContext.request.contextPath}/admin/users" class="btn btn-secondary">Hủy</a>
     </form>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<jsp:include page="/WEB-INF/common/footer.jsp" />
 

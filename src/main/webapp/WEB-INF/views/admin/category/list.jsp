@@ -1,135 +1,126 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<div class="container-fluid py-4">
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h3 class="mb-0">Quản lý Danh mục</h3>
-          <a href="${pageContext.request.contextPath}/admin/categories/create" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Thêm mới
-          </a>
-        </div>
-        <div class="card-body">
-          <!-- Thông báo thành công -->
-          <c:if test="${not empty success}">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                ${success}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh mục - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<jsp:include page="/WEB-INF/common/header.jsp" />
+<div class="container-fluid mt-4">
+    <h1 class="mb-4"><i class="bi bi-tags"></i> Quản lý Danh mục</h1>
+    
+    <!-- Stats Card -->
+    <div class="row mb-4">
+        <div class="col-md-12 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-tags"></i> Tổng số danh mục</h5>
+                    <h3 class="mb-0">${not empty categories ? fn:length(categories) : 0}</h3>
+                    <small>Tổng số danh mục trong hệ thống</small>
+                </div>
             </div>
-          </c:if>
-
-          <!-- Form tìm kiếm -->
-          <form method="get" action="${pageContext.request.contextPath}/admin/categories" class="mb-4">
-            <div class="row">
-              <div class="col-md-10">
-                <input type="text" name="q" class="form-control"
-                       placeholder="Tìm kiếm theo tên danh mục..."
-                       value="${q}">
-              </div>
-              <div class="col-md-2">
-                <button type="submit" class="btn btn-info w-100">
-                  <i class="fas fa-search"></i> Tìm kiếm
-                </button>
-              </div>
-            </div>
-          </form>
-
-          <!-- Bảng danh sách -->
-          <div class="table-responsive">
-            <table class="table table-hover table-bordered">
-              <thead class="table-dark">
-              <tr>
-                <th width="5%">ID</th>
-                <th width="10%">Hình ảnh</th>
-                <th width="20%">Tên danh mục</th>
-                <th width="15%">Mã danh mục</th>
-                <th width="15%">Người tạo</th>
-                <th width="10%">Trạng thái</th>
-                <th width="15%">Thao tác</th>
-              </tr>
-              </thead>
-              <tbody>
-              <c:choose>
-                <c:when test="${empty categories}">
-                  <tr>
-                    <td colspan="7" class="text-center text-muted py-4">
-                      <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
-                      Không có dữ liệu
-                    </td>
-                  </tr>
-                </c:when>
-                <c:otherwise>
-                  <c:forEach var="cat" items="${categories}">
-                    <tr>
-                      <td>${cat.id}</td>
-                      <td>
-                        <c:choose>
-                          <c:when test="${not empty cat.images}">
-                            <img src="${cat.images}"
-                                 class="img-thumbnail"
-                                 style="width: 60px; height: 60px; object-fit: cover;"
-                                 alt="${cat.categoryName}">
-                          </c:when>
-                          <c:otherwise>
-                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
-                                 style="width: 60px; height: 60px;">
-                              <i class="fas fa-image"></i>
-                            </div>
-                          </c:otherwise>
-                        </c:choose>
-                      </td>
-                      <td><strong>${cat.categoryName}</strong></td>
-                      <td><code>${cat.categorycode}</code></td>
-                      <td>
-                        <c:if test="${not empty cat.user}">
-                          <i class="fas fa-user"></i> ${cat.user.username}
-                        </c:if>
-                      </td>
-                      <td>
-                        <c:choose>
-                          <c:when test="${cat.status}">
-                            <span class="badge bg-success">Hoạt động</span>
-                          </c:when>
-                          <c:otherwise>
-                            <span class="badge bg-secondary">Không hoạt động</span>
-                          </c:otherwise>
-                        </c:choose>
-                      </td>
-                      <td>
-                        <a href="${pageContext.request.contextPath}/admin/categories/edit/${cat.id}"
-                           class="btn btn-sm btn-warning" title="Sửa">
-                          <i class="fas fa-edit"></i>
-                        </a>
-                        <button type="button" class="btn btn-sm btn-danger"
-                                onclick="confirmDelete(${cat.id})" title="Xóa">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </c:forEach>
-                </c:otherwise>
-              </c:choose>
-              </tbody>
-            </table>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-tags"></i> Danh sách danh mục</h5>
+                    <a href="<c:url value='/admin/categories/create'/>" class="btn btn-outline-success">
+                        <i class="bi bi-plus-circle"></i> Thêm mới
+                    </a>
+                </div>
+                <div class="card-body">
+                    <!-- Thông báo thành công -->
+                    <c:if test="${not empty success}">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle"></i> ${success}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </c:if>
+
+                    <!-- Thông báo lỗi -->
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle"></i> ${error}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </c:if>
+
+                    <!-- Bảng danh sách -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                            <tr>
+                                <th width="8%">ID</th>
+                                <th width="40%">Tên (Tiếng Việt)</th>
+                                <th width="40%">Tên (Tiếng Anh)</th>
+                                <th width="12%">Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:choose>
+                                <c:when test="${empty categories}">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                                            <h4 class="mt-3 text-muted">Chưa có dữ liệu</h4>
+                                            <p class="text-muted">Bắt đầu quản lý hệ thống bằng cách thêm dữ liệu mới.</p>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="cat" items="${categories}">
+                                        <tr>
+                                            <td>${cat.id}</td>
+                                            <td><strong>${cat.nameVi}</strong></td>
+                                            <td>${cat.nameEn != null ? cat.nameEn : '-'}</td>
+                                            <td>
+                                                <a href="<c:url value='/admin/categories/edit/${cat.id}'/>"
+                                                   class="btn btn-sm btn-outline-warning">
+                                                    <i class="bi bi-pencil"></i> Sửa
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        onclick="confirmDelete(${cat.id}, '${cat.nameVi}')">
+                                                    <i class="bi bi-trash"></i> Xóa
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Form xóa ẩn -->
-<form id="deleteForm" method="post" action="${pageContext.request.contextPath}/admin/categories/delete">
-  <input type="hidden" name="id" id="deleteId">
+<form id="deleteForm" method="post" action="<c:url value='/admin/categories/delete'/>">
+    <input type="hidden" name="id" id="deleteId">
 </form>
 
 <script>
-  function confirmDelete(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
-      document.getElementById('deleteId').value = id;
-      document.getElementById('deleteForm').submit();
+    function confirmDelete(id, name) {
+        if (confirm('Bạn có chắc chắn muốn xóa danh mục "' + name + '"?\n\nLưu ý: Thao tác này không thể hoàn tác!')) {
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteForm').submit();
+        }
     }
-  }
 </script>
+</div>
+<jsp:include page="/WEB-INF/common/footer.jsp" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

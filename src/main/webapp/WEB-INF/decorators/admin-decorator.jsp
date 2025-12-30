@@ -1,18 +1,25 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản trị - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <sitemesh:write property='head'/>
     <style>
+        * {
+            font-family: 'Inter', 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         body {
             background-color: #f5f7fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .sidebar {
             min-height: 100vh;
@@ -102,41 +109,41 @@
                         <a href="<c:url value='/admin/home'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/home\")}'>active</c:if>">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
+                    <li>
+                        <a href="<c:url value='/admin/home'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/home")}'>active</c:when><c:otherwise/></c:choose>">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/admin/users'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/users\")}'>active</c:if>">
+                        <a href="<c:url value='/admin/users'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/users")}'>active</c:when><c:otherwise/></c:choose>">
                             <i class="bi bi-people"></i> Quản lý người dùng
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/admin/categories'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/categories\")}'>active</c:if>">
+                        <a href="<c:url value='/admin/categories'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/categories")}'>active</c:when><c:otherwise/></c:choose>">
                             <i class="bi bi-tags"></i> Danh mục sản phẩm
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/admin/products'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/products\")}'>active</c:if>">
+                        <a href="<c:url value='/admin/products'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/products")}'>active</c:when><c:otherwise/></c:choose>">
                             <i class="bi bi-box-seam"></i> Sản phẩm
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/admin/vendors'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/vendors\")}'>active</c:if>">
+                        <a href="<c:url value='/admin/vendors'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/vendors")}'>active</c:when><c:otherwise/></c:choose>">
                             <i class="bi bi-shop"></i> Nhà bán hàng
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/admin/orders'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/orders\")}'>active</c:if>">
+                        <a href="<c:url value='/admin/orders'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/orders")}'>active</c:when><c:otherwise/></c:choose>">
                             <i class="bi bi-cart-check"></i> Đơn hàng
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/admin/blogs'/>" class="<c:if test='${requestScope[\"javax.servlet.forward.request_uri\"].contains(\"/admin/blogs\")}'>active</c:if>">
+                        <a href="<c:url value='/admin/blogs'/>" class="<c:choose><c:when test='${fn:contains(pageContext.request.requestURI, "/admin/blogs")}'>active</c:when><c:otherwise/></c:choose>">
                             <i class="bi bi-journal-text"></i> Blog
                         </a>
                     </li>
-                    <li>
-                        <a href="<c:url value='/'/>">
-                            <i class="bi bi-house"></i> Về trang chủ
-                        </a>
                     </li>
                 </ul>
             </div>

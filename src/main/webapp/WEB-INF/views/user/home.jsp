@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang chủ - Đặc sản quê hương</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/common/header.jsp" />
 <div class="container mt-4">
 <!-- Hero Section -->
 <div class="hero-section mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 60px 40px; color: white; text-align: center;">
@@ -79,7 +80,7 @@
         <div class="row">
             <c:forEach var="category" items="${categories}" begin="0" end="5">
                 <div class="col-md-4 col-lg-2 mb-3">
-                    <a href="<c:url value='/user/categories'/>" class="text-decoration-none">
+                    <a href="<c:url value='/user/products?categoryId=${category.id}'/>" class="text-decoration-none">
                         <div class="card category-card border-0 shadow-sm h-100" style="transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;">
                             <div class="card-body text-center p-4">
                                 <div class="category-icon mb-2" style="font-size: 2.5rem; color: #667eea;">
@@ -201,6 +202,7 @@
     }
 </style>
 </div>
+<jsp:include page="/WEB-INF/common/footer.jsp" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

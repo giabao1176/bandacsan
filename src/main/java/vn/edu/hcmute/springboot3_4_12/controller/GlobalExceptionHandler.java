@@ -3,7 +3,7 @@ package vn.edu.hcmute.springboot3_4_12.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MissingServletRequestPartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -71,5 +71,9 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 }
+
+
+
+
 
 

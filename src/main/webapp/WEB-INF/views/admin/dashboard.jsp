@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
+<jsp:include page="/WEB-INF/common/header.jsp" />
 <div class="container-fluid mt-4">
     <h1 class="mb-4"><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
     <p class="text-muted mb-4">Chào mừng, <c:out value="${sessionScope.user != null ? sessionScope.user.username : 'Admin'}"/>! Đây là trang quản trị hệ thống.</p>
@@ -39,8 +40,8 @@
             <div class="card text-white bg-warning">
                 <div class="card-body">
                     <h5 class="card-title"><i class="bi bi-box-seam"></i> Sản phẩm</h5>
-                    <h3 class="mb-0">-</h3>
-                    <small>Chưa có dữ liệu</small>
+                    <h3 class="mb-0">${not empty products ? fn:length(products) : 0}</h3>
+                    <small>Tổng số sản phẩm</small>
                 </div>
             </div>
         </div>
@@ -48,8 +49,8 @@
             <div class="card text-white bg-info">
                 <div class="card-body">
                     <h5 class="card-title"><i class="bi bi-shop"></i> Nhà bán</h5>
-                    <h3 class="mb-0">-</h3>
-                    <small>Chưa có dữ liệu</small>
+                    <h3 class="mb-0">${not empty vendors ? fn:length(vendors) : 0}</h3>
+                    <small>Tổng số nhà bán</small>
                 </div>
             </div>
         </div>
@@ -137,6 +138,6 @@
         </div>
     </c:if>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<jsp:include page="/WEB-INF/common/footer.jsp" />
 </body>
 </html>
