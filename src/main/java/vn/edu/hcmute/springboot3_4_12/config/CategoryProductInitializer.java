@@ -71,7 +71,7 @@ public class CategoryProductInitializer implements CommandLineRunner {
         if (vendorOpt.isEmpty()) {
             // Tạo vendor nếu chưa có
             Vendor vendor = new Vendor();
-            vendor.setUser(userRepository.findUserByUsername("vendor1").orElseThrow());
+            vendor.setUser(userRepository.findUserByUsername("vendor1").orElse(null));
             vendor.setStoreName("Cửa hàng Đặc sản Quê hương");
             vendor.setDescriptionVi("Chuyên cung cấp các đặc sản từ khắp mọi miền đất nước");
             vendor.setDescriptionEn("Specialized in providing specialties from all regions of Vietnam");

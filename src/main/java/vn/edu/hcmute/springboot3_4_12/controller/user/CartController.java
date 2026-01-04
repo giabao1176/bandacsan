@@ -1,6 +1,8 @@
 package vn.edu.hcmute.springboot3_4_12.controller.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import vn.edu.hcmute.springboot3_4_12.entity.User;
 
 @Controller
-@RequestMapping("/user/cart")
+            @RequestMapping("/user/cart")
 @RequiredArgsConstructor
 public class CartController {
 
@@ -37,22 +39,22 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public String addToCart(@ModelAttribute CartRequestDTO request,
-                           HttpSession session,
-                           RedirectAttributes redirectAttributes) {
+    @ResponseBody // Trả về dữ liệu (JSON/Text) thay vì tìm view
+    public ResponseEntity<?> addToCart(@RequestBody CartRequestDTO request,
+                                       HttpSession session) {
         User user = (User) session.getAttribute("user");
+
+        // 1. Kiểm tra đăng nhập
         if (user == null) {
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Vui lòng đăng nhập");
         }
 
         try {
             cartService.addToCart(user.getId(), request);
-            redirectAttributes.addFlashAttribute("success", "Đã thêm sản phẩm vào giỏ hàng!");
+            return ResponseEntity.ok("Đã thêm vào giỏ hàng!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Không thể thêm sản phẩm: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
-        return "redirect:/user/products/" + request.getProductId();
     }
 
     @PostMapping("/update")

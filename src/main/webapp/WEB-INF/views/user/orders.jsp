@@ -240,12 +240,16 @@
                             <div class="order-item">
                                 <div class="d-flex align-items-center">
                                     <c:choose>
+                                        <%-- Kiểm tra nếu productImage không null và không trống --%>
                                         <c:when test="${not empty item.productImage}">
-                                            <img src="${item.productImage}" alt="${item.productNameVi}" class="product-image me-3">
+                                            <img src="<c:url value='/files/${item.productImage}'/>"
+                                                 alt="${item.productNameVi}"
+                                                 class="product-image me-3">
                                         </c:when>
+                                        <%-- Trường hợp productImage là null hoặc trống --%>
                                         <c:otherwise>
-                                            <div class="product-image bg-light d-flex align-items-center justify-content-center me-3">
-                                                <i class="fas fa-image text-muted"></i>
+                                            <div class="product-image bg-light d-flex align-items-center justify-content-center me-3 border">
+                                                <i class="fas fa-image text-muted" style="font-size: 1.5rem;"></i>
                                             </div>
                                         </c:otherwise>
                                     </c:choose>
@@ -259,14 +263,6 @@
                                 </div>
                             </div>
                         </c:forEach>
-
-                        <c:if test="${order.items.size() > 2}">
-                            <div class="order-item text-center">
-                                <small class="text-muted">và ${order.items.size() - 2} sản phẩm khác...</small>
-                            </div>
-                        </c:if>
-                    </div>
-
                     <div class="order-total">
                         <div class="total-amount">
                             Tổng tiền: <fmt:formatNumber value="${order.totalAmount}" pattern="#,##0"/> đ
@@ -288,7 +284,7 @@
     </c:choose>
 </div>
 
-<jsp:include page="/WEB-INF/common/footer.jsp" />
+<%--<jsp:include page="/WEB-INF/common/footer.jsp" />--%>
 
 <!-- Review Modal -->
 <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">

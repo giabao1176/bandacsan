@@ -27,33 +27,26 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String uri = request.getRequestURI();
 
-        // Chưa đăng nhập - redirect về login
-        if (user == null) {
-            response.sendRedirect("/login");
-            return false;
-        }
+        // ===== ROLE =====
+        String role = (user == null) ? "GUEST" : user.getRole();
 
-        // Kiểm tra quyền truy cập theo role
-        String userRole = user.getRole();
-        
-        // API và admin chỉ ADMIN được dùng
-        if (uri.startsWith("/api/") || uri.startsWith("/admin/")) {
-            if (!"ADMIN".equals(userRole)) {
-                // Không phải ADMIN -> redirect về login
-                response.sendRedirect("/login");
-                return false;
-            }
-        }
-        
-        // Vendor routes chỉ VENDOR được dùng
-        if (uri.startsWith("/vendor/")) {
-            if (!"VENDOR".equals(userRole)) {
-                // Không phải VENDOR -> redirect về login
+        // ===== ADMIN & API =====
+        if (uri.startsWith("/admin") || uri.startsWith("/api")) {
+            if (!"ADMIN".equals(role)) {
                 response.sendRedirect("/login");
                 return false;
             }
         }
 
+        // ===== VENDOR =====
+        if (uri.startsWith("/vendor")) {
+            if (!"VENDOR".equals(role)) {
+                response.sendRedirect("/login");
+                return false;
+            }
+        }
+
+        // ===== PUBLIC / GUEST =====
         return true;
     }
 }

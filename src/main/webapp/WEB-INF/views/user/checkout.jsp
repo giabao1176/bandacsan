@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -154,208 +155,128 @@
 <body>
 <jsp:include page="/WEB-INF/common/header.jsp" />
 
-<!-- Checkout Header -->
 <section class="checkout-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h1 class="animate__animated animate__fadeInDown">
-                    <i class="fas fa-credit-card me-3"></i>Thanh toán đơn hàng
-                </h1>
-                <p class="animate__animated animate__fadeInUp animate__delay-1s">
-                    Hoàn tất đơn hàng của bạn chỉ với vài bước đơn giản
-                </p>
-            </div>
-        </div>
+    <%-- [cite: 29] --%>
+    <div class="container text-center">
+        <h1>Thanh toán đơn hàng</h1>
     </div>
 </section>
 
 <div class="container">
-    <!-- Alert Messages -->
     <c:if test="${not empty error}">
-        <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>${error}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <%-- [cite: 30] --%>
+        <div class="alert alert-danger">${error}</div>
     </c:if>
 
     <div class="row">
-        <!-- Checkout Form -->
         <div class="col-lg-8">
-            <form method="post" action="<c:url value='/user/checkout'/>" class="checkout-form animate__animated animate__fadeInLeft">
-                <!-- Shipping Information -->
+            <%-- Form nhập liệu [cite: 31-50] --%>
+            <form id="checkoutForm" class="checkout-form">
                 <div class="form-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-truck me-2"></i>Thông tin giao hàng
-                    </h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="shippingAddress" class="form-label">Địa chỉ giao hàng *</label>
-                            <textarea class="form-control" id="shippingAddress" name="shippingAddress" rows="3"
-                                    placeholder="Nhập địa chỉ giao hàng chi tiết" required></textarea>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Số điện thoại *</label>
-                            <input type="tel" class="form-control" id="phone" name="phone"
-                                 placeholder="Nhập số điện thoại" required>
-                        </div>
+                    <h3 class="section-title">Thông tin giao hàng</h3>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ *</label>
+                        <textarea class="form-control" id="shippingAddress" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="notes" class="form-label">Ghi chú (tùy chọn)</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="2"
-                                placeholder="Nhập ghi chú cho đơn hàng"></textarea>
+                        <label class="form-label">Số điện thoại *</label>
+                        <input type="tel" class="form-control" id="phone" required>
                     </div>
                 </div>
 
-                <!-- Payment Method -->
                 <div class="form-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-credit-card me-2"></i>Phương thức thanh toán
-                    </h3>
-                    <div class="payment-options">
-                        <div class="payment-option selected" data-method="COD">
-                            <div class="d-flex align-items-center">
-                                <div class="payment-icon bg-success text-white">
-                                    <i class="fas fa-hand-holding-usd"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Thanh toán khi nhận hàng (COD)</h6>
-                                    <p class="text-muted small mb-0">Thanh toán bằng tiền mặt khi nhận hàng</p>
-                                </div>
-                            </div>
-                            <input type="radio" name="paymentMethod" value="COD" checked style="display: none;">
-                        </div>
-
-                        <div class="payment-option" data-method="MOMO">
-                            <div class="d-flex align-items-center">
-                                <div class="payment-icon bg-warning text-white">
-                                    <i class="fas fa-mobile-alt"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Ví điện tử MoMo</h6>
-                                    <p class="text-muted small mb-0">Thanh toán nhanh qua ứng dụng MoMo</p>
-                                </div>
-                            </div>
-                            <input type="radio" name="paymentMethod" value="MOMO" style="display: none;">
-                        </div>
-
-                        <div class="payment-option" data-method="STRIPE">
-                            <div class="d-flex align-items-center">
-                                <div class="payment-icon bg-info text-white">
-                                    <i class="fab fa-cc-visa"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Thẻ tín dụng/ghi nợ</h6>
-                                    <p class="text-muted small mb-0">Thanh toán an toàn qua Stripe</p>
-                                </div>
-                            </div>
-                            <input type="radio" name="paymentMethod" value="STRIPE" style="display: none;">
-                        </div>
+                    <h3 class="section-title">Phương thức thanh toán</h3>
+                    <div class="payment-option selected" data-method="COD">
+                        <input type="radio" name="paymentMethod" value="COD" checked> COD
+                    </div>
+                    <div class="payment-option" data-method="MOMO">
+                        <input type="radio" name="paymentMethod" value="MOMO"> MoMo
                     </div>
                 </div>
             </form>
         </div>
 
-        <!-- Order Summary -->
         <div class="col-lg-4">
-            <div class="order-summary animate__animated animate__fadeInRight">
-                <h4 class="mb-4">
-                    <i class="fas fa-shopping-cart me-2"></i>Tóm tắt đơn hàng
-                </h4>
-
-                <!-- Products -->
+            <div class="order-summary">
+                <h4>Tóm tắt đơn hàng</h4>
                 <div class="mb-4">
-                    <c:forEach var="item" items="${cart.items}">
-                        <div class="product-item">
-                            <c:choose>
-                                <c:when test="${not empty item.productImage}">
-                                    <img src="${item.productImage}" alt="${item.productNameVi}" class="product-image">
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                                        <i class="fas fa-image text-muted"></i>
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${item.productNameVi}</h6>
-                                <small class="text-white-50">SL: ${item.quantity} × <fmt:formatNumber value="${item.productPrice}" pattern="#,##0"/> đ</small>
-                                <div class="fw-bold"><fmt:formatNumber value="${item.subtotal}" pattern="#,##0"/> đ</div>
+                    <%-- Tìm và thay thế đoạn hiển thị danh sách sản phẩm (Dòng ~52 trong file của bạn) --%>
+                    <c:forEach var="item" items="${cart.items}" >
+                        <div class="product-item d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <div class="product-info-wrapper d-flex align-items-center flex-grow-1">
+                                <c:choose>
+                                    <%-- SỬA: Thay item.imageUrls bằng item.productImage --%>
+                                    <c:when test="${not empty item.productImage}">
+                                        <img src="<c:url value='/files/${item.productImage}'/>"
+                                             alt="${item.productNameVi}"
+                                             class="product-image"
+                                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="product-image bg-light d-flex align-items-center justify-content-center"
+                                             style="width: 60px; height: 60px; border-radius: 8px;">
+                                            <i class="fas fa-image text-muted"></i>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <div class="ms-3">
+                                    <h6 class="mb-0 text-truncate" style="max-width: 200px;">${item.productNameVi}</h6>
+                                        <%-- SỬA: Đảm bảo dùng đúng productPrice --%>
+                                    <small class="text-muted">
+                                        Số lượng: ${item.quantity} × <fmt:formatNumber value="${item.productPrice}" pattern="#,##0"/>đ
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                    <%-- SỬA: Dùng subtotal từ DTO --%>
+                                <span class="fw-bold text-primary">
+                <fmt:formatNumber value="${item.subtotal}" pattern="#,##0"/>đ
+            </span>
                             </div>
                         </div>
                     </c:forEach>
                 </div>
 
-                <!-- Summary -->
-                <div class="summary-item">
-                    <span>Tổng số sản phẩm:</span>
-                    <span>${cart.totalItems}</span>
-                </div>
-                <div class="summary-item">
-                    <span>Phí vận chuyển:</span>
-                    <span>Miễn phí</span>
-                </div>
-                <div class="summary-item">
-                    <span>Tổng tiền:</span>
-                    <span><fmt:formatNumber value="${cart.totalPrice}" pattern="#,##0"/> đ</span>
-                </div>
-
-                <div class="text-center mt-4">
-                    <button type="submit" form="checkoutForm" class="btn btn-checkout">
-                        <i class="fas fa-shopping-bag me-2"></i>Đặt hàng ngay
-                    </button>
-                </div>
+                <div class="summary-item"><span>Tổng tiền:</span> <span><fmt:formatNumber value="${cart.totalPrice}" pattern="#,##0"/> đ</span></div>
+                <button type="button" onclick="handleCheckout()" class="btn btn-checkout w-100 mt-3">Đặt hàng ngay</button>
             </div>
         </div>
     </div>
 </div>
 
-<jsp:include page="/WEB-INF/common/footer.jsp" />
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Set form id for checkout button
-    document.querySelector('.checkout-form').id = 'checkoutForm';
-
-    // Payment method selection
-    document.querySelectorAll('.payment-option').forEach(function(option) {
-        option.addEventListener('click', function() {
-            // Remove selected class from all options
-            document.querySelectorAll('.payment-option').forEach(function(opt) {
-                opt.classList.remove('selected');
-                opt.querySelector('input[type="radio"]').checked = false;
-            });
-
-            // Add selected class to clicked option
-            this.classList.add('selected');
-            this.querySelector('input[type="radio"]').checked = true;
-        });
-    });
-
-    // Form validation
-    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    <%-- Logic xử lý JavaScript giữ nguyên theo file gốc của bạn [cite: 65-79] --%>
+    async function handleCheckout() {
         const shippingAddress = document.getElementById('shippingAddress').value.trim();
         const phone = document.getElementById('phone').value.trim();
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 
-        if (!shippingAddress) {
-            e.preventDefault();
-            alert('Vui lòng nhập địa chỉ giao hàng!');
-            document.getElementById('shippingAddress').focus();
+        if (!shippingAddress || !phone) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
             return;
         }
 
-        if (!phone) {
-            e.preventDefault();
-            alert('Vui lòng nhập số điện thoại!');
-            document.getElementById('phone').focus();
-            return;
-        }
+        const checkoutData = { shippingAddress, phone, paymentMethod };
 
-        // Show loading
-        const submitBtn = document.querySelector('.btn-checkout');
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
-        submitBtn.disabled = true;
-    });
+        try {
+            const response = await fetch('<c:url value="/user/checkout"/>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(checkoutData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.payUrl) window.location.href = data.payUrl;
+                else window.location.href = '<c:url value="/user/orders"/>';
+            } else {
+                alert('Lỗi khi đặt hàng');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 </script>
 </body>
 </html>

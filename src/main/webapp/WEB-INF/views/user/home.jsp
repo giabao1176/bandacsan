@@ -661,9 +661,13 @@
                                         </span>
                                     </c:if>
                                 </div>
-                                <a href="#" class="btn btn-primary w-100">
+                                <button class="btn btn-primary w-100 add-to-cart-btn"
+                                        data-id="${product.id}"
+                                        data-name="${product.nameVi != null ? product.nameVi : product.nameEn}"
+                                        data-price="${product.price}"
+                                        data-image="${not empty product.imageUrls ? product.imageUrls[0] : ''}">
                                     <i class="bi bi-cart-plus"></i> Thêm vào giỏ
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -702,5 +706,66 @@
 </div>
 <jsp:include page="/WEB-INF/common/footer.jsp" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kiểm tra trạng thái đăng nhập từ Session
+        const isLoggedIn = ${not empty sessionScope.user};
+
+        // Chọn tất cả các nút có class add-to-cart-btn
+        const cartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+        cartButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // 1. Kiểm tra đăng nhập
+                if (!isLoggedIn) {
+                    // Lưu lại trang hiện tại để sau khi login có thể quay lại (tùy chọn)
+                    const currentPath = window.location.pathname;
+                    window.location.href = '<c:url value="/login"/>?redirect=' + currentPath;
+                    return;
+                }
+
+                // 2. Nếu đã đăng nhập, lấy ID sản phẩm và gửi yêu cầu
+                const productId = this.getAttribute('data-id');
+                addToCart(productId);
+            });
+        });
+    });
+
+    function addToCart(productId) {
+        // Khởi tạo Object khớp với CartRequestDTO của bạn
+        const cartData = {
+            productId: parseInt(productId),
+            quantity: 1 // Mặc định thêm 1 sản phẩm
+        };
+        console.log(cartData);
+        fetch('<c:url value="/user/cart/add"/>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Nếu bạn dùng Spring Security và có bật CSRF, hãy thêm header này:
+                // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            },
+            body: JSON.stringify(cartData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Hiển thị thông báo thành công (Có thể dùng Toast thay vì alert cho đẹp)
+                    alert("Sản phẩm đã được thêm vào giỏ hàng!");
+                    // Bạn có thể gọi thêm hàm cập nhật số lượng trên icon giỏ hàng ở đây
+                } else if (response.status === 401) {
+                    // Trường hợp session hết hạn bất ngờ
+                    window.location.href = '<c:url value="/login"/>';
+                } else {
+                    alert("Không thể thêm vào giỏ hàng. Vui lòng thử lại sau.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Lỗi kết nối đến hệ thống.");
+            });
+    }
+</script>
 </body>
 </html>

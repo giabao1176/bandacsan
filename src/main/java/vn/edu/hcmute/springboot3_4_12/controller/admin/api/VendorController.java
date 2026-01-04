@@ -1,4 +1,4 @@
-package vn.edu.hcmute.springboot3_4_12.controller.admin;
+package vn.edu.hcmute.springboot3_4_12.controller.admin.api;
 
 
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.hcmute.springboot3_4_12.dto.VendorRequestDTO;
 import vn.edu.hcmute.springboot3_4_12.dto.VendorResponseDTO;
-import vn.edu.hcmute.springboot3_4_12.entity.Vendor;
 import vn.edu.hcmute.springboot3_4_12.service.impl.VendorService;
 
 

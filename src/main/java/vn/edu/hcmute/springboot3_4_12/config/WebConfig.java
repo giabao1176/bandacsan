@@ -23,7 +23,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/logout",             // Đăng xuất
                         "/error",              // Trang lỗi
                         "/resources/**",       // Static resources (CSS, JS, images)
-                        "/api/auth/**"         // API đăng nhập/đăng ký (nếu có)
+                        "/api/auth/**",         // API đăng nhập/đăng ký (nếu có)
+                        "/files/**"
                 );
     }
 }

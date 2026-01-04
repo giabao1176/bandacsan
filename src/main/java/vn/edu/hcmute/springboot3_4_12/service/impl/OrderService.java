@@ -11,6 +11,7 @@ import vn.edu.hcmute.springboot3_4_12.service.IOrderService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,7 @@ public class OrderService implements IOrderService {
 
         Order order = new Order();
         order.setUser(user);
+
         order.setTotalAmount(cart.getTotalPrice());
         order.setStatus(OrderStatus.PENDING);
         order = orderRepository.save(order);
@@ -123,6 +125,34 @@ public class OrderService implements IOrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Order findOrderById(Long l) {
+        return orderRepository.findOrderById(l);
+    }
+
+    @Override
+    @Transactional
+    public void updateStatus(long orderId, String status) {
+        // 1. Tìm thông tin thanh toán dựa trên orderId
+        Payment payment = paymentRepository.findByOrder_Id(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin thanh toán cho đơn hàng: " + orderId));
+
+        // 2. Cập nhật trạng thái thanh toán (ví dụ: "PAID", "FAILED")
+        payment.setStatus(status);
+        paymentRepository.save(payment);
+
+        // 3. Cập nhật trạng thái đơn hàng tương ứng
+        Order order = payment.getOrder();
+        if ("PAID".equalsIgnoreCase(status)) {
+            order.setStatus(OrderStatus.PROCESSING); // Hoặc trạng thái bạn quy định sau khi thanh toán
+            // Có thể thêm logic trừ kho sản phẩm ở đây nếu cần
+        } else if ("FAILED".equalsIgnoreCase(status)) {
+            order.setStatus(OrderStatus.CANCELLED);
+        }
+
+        orderRepository.save(order);
+    }
+
     private OrderDTO convertToDTO(Order order) {
         List<OrderItemDTO> itemDTOs = orderItemRepository.findByOrder_Id(order.getId())
                 .stream()
@@ -146,14 +176,26 @@ public class OrderService implements IOrderService {
     }
 
     private OrderItemDTO convertItemToDTO(OrderItem item) {
+        // 1. Tính toán subtotal
+        Double subtotal = item.getPrice() * item.getQuantity();
+
+        // 2. Tìm hình ảnh chính (main = true) từ danh sách images của Product
+        String mainImage = item.getProduct().getImages().stream()
+                .filter(Image::isMain) // Lọc những ảnh có main = true
+                .map(Image::getUrl)    // Lấy ra chuỗi URL (tên file)
+                .findFirst()           // Lấy ảnh đầu tiên tìm thấy
+                .orElse(null);         // Nếu không có ảnh main nào thì trả về null
+
+        // 3. Trả về DTO hoàn chỉnh
         return new OrderItemDTO(
                 item.getId(),
                 item.getProduct().getId(),
                 item.getProduct().getNameVi(),
                 item.getProduct().getNameEn(),
+                mainImage,              // Gán ảnh chính vào productImage
                 item.getQuantity(),
                 item.getPrice(),
-                item.getPrice() * item.getQuantity()
+                subtotal
         );
     }
 

@@ -24,5 +24,11 @@ public class ProductResponseDTO {
     private String vendorName;
     private List<String> categories;
     private List<String> imageUrls;
+    public String getProductImage() {
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            return imageUrls.get(0); // Lấy ảnh đầu tiên trong list
+        }
+        return null;
+    }
     // getter & setter
 }
