@@ -139,9 +139,3 @@ Mọi đóng góp xin vui lòng tạo **Pull Request** hoặc **Issue** trên Gi
 
 Dự án mã nguồn mở, phục vụ cho mục đích **học tập và nghiên cứu**.
 
-### ✅ Cách dùng
-1. Vào **repository GitHub**
-2. Mở file `README.md` (hoặc tạo mới)
-3. **Dán toàn bộ nội dung trên**
-4. Commit → Done ✅
-
