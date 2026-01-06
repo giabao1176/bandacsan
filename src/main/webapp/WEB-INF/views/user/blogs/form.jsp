@@ -542,30 +542,36 @@ function showProductModal(products) {
     const modal = new bootstrap.Modal(document.getElementById('productModal'));
     const productList = document.getElementById('productList');
 
-    productList.innerHTML = products.map(product => `
-        <div class="col-md-6 col-lg-4">
-            <div class="product-item" onclick="toggleProductSelection(${product.id}, this)">
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" value="${product.id}" id="product${product.id}">
-                    <label class="form-check-label w-100" for="product${product.id}">
-                        <div class="d-flex align-items-start">
-                            <div class="flex-shrink-0 me-2">
-                                ${product.imageUrls && product.imageUrls.length > 0
-                                    ? `<img src="${product.imageUrls[0]}" alt="${product.nameVi}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">`
-                                    : `<div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;"><i class="bi bi-image text-muted"></i></div>`
-                                }
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold text-truncate" title="${product.nameVi}">${product.nameVi}</div>
-                                <div class="text-primary fw-bold">${product.price.toLocaleString()}₫</div>
-                                <small class="text-muted">${product.categoryNameVi || 'Chưa phân loại'}</small>
-                            </div>
-                        </div>
-                    </label>
-                </div>
-            </div>
-        </div>
-    `).join('');
+    productList.innerHTML = products.map(product => {
+        const imageHtml = product.imageUrls && product.imageUrls.length > 0
+            ? '<img src="' + product.imageUrls[0] + '" alt="' + (product.nameVi || '') + '" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">'
+            : '<div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;"><i class="bi bi-image text-muted"></i></div>';
+        
+        const productId = product.id;
+        const productName = product.nameVi || '';
+        const productPrice = product.price.toLocaleString();
+        const productCategory = product.categoryNameVi || 'Chưa phân loại';
+        
+        return '<div class="col-md-6 col-lg-4">' +
+            '<div class="product-item" onclick="toggleProductSelection(' + productId + ', this)">' +
+            '<div class="form-check mb-2">' +
+            '<input class="form-check-input" type="checkbox" value="' + productId + '" id="product' + productId + '">' +
+            '<label class="form-check-label w-100" for="product' + productId + '">' +
+            '<div class="d-flex align-items-start">' +
+            '<div class="flex-shrink-0 me-2">' +
+            imageHtml +
+            '</div>' +
+            '<div class="flex-grow-1">' +
+            '<div class="fw-bold text-truncate" title="' + productName + '">' + productName + '</div>' +
+            '<div class="text-primary fw-bold">' + productPrice + '₫</div>' +
+            '<small class="text-muted">' + productCategory + '</small>' +
+            '</div>' +
+            '</div>' +
+            '</label>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+    }).join('');
 
     modal.show();
 }
@@ -585,12 +591,13 @@ function toggleProductSelection(productId, element) {
 
 function updateSelectedCount() {
     const selectedCount = document.querySelectorAll('#productList input[type="checkbox"]:checked').length;
+    const suffix = selectedCount !== 1 ? '' : '';
     document.getElementById('selectedCount').textContent =
-        `Đã chọn ${selectedCount} sản phẩm${selectedCount !== 1 ? '' : ''}`;
+        'Đã chọn ' + selectedCount + ' sản phẩm' + suffix;
 }
 
 function updateSearchCount(total) {
-    document.getElementById('searchCount').textContent = `${total} sản phẩm`;
+    document.getElementById('searchCount').textContent = total + ' sản phẩm';
 }
 
 function addSelectedProducts() {
@@ -617,17 +624,18 @@ function addSelectedProducts() {
 
             const productElement = document.createElement('div');
             productElement.className = 'selected-product';
-            productElement.innerHTML = `
-                <div class="product-info">
-                    <div class="product-name">${product.nameVi}</div>
-                    <div class="product-price">${product.price.toLocaleString()}₫</div>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-danger"
-                        onclick="removeProduct('${productId}', this)">
-                    <i class="bi bi-x"></i>
-                </button>
-                <input type="hidden" name="productIds" value="${productId}">
-            `;
+            const productName = product.nameVi || '';
+            const productPrice = product.price.toLocaleString();
+            productElement.innerHTML = 
+                '<div class="product-info">' +
+                    '<div class="product-name">' + productName + '</div>' +
+                    '<div class="product-price">' + productPrice + '₫</div>' +
+                '</div>' +
+                '<button type="button" class="btn btn-sm btn-outline-danger"' +
+                        ' onclick="removeProduct(\'' + productId + '\', this)">' +
+                    '<i class="bi bi-x"></i>' +
+                '</button>' +
+                '<input type="hidden" name="productIds" value="' + productId + '">';
 
             productSelection.appendChild(productElement);
         }
@@ -687,30 +695,33 @@ function previewBlog() {
 
     // Open preview in new window
     const previewWindow = window.open('', '_blank');
-    previewWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Preview: ${title}</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        </head>
-        <body class="bg-light">
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="card">
-                            <div class="card-body">
-                                <h1 class="display-4 mb-3">${title}</h1>
-                                ${summary ? `<p class="lead text-muted mb-4">${summary}</p>` : ''}
-                                <div>${content.replace(/\n/g, '<br>')}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-    `);
+    const previewTitle = title || 'Preview';
+    const previewSummary = summary ? '<p class="lead text-muted mb-4">' + summary + '</p>' : '';
+    const previewContent = content.replace(/\n/g, '<br>');
+    previewWindow.document.write(
+        '<!DOCTYPE html>' +
+        '<html>' +
+        '<head>' +
+            '<title>Preview: ' + previewTitle + '</title>' +
+            '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">' +
+        '</head>' +
+        '<body class="bg-light">' +
+            '<div class="container py-5">' +
+                '<div class="row justify-content-center">' +
+                    '<div class="col-lg-8">' +
+                        '<div class="card">' +
+                            '<div class="card-body">' +
+                                '<h1 class="display-4 mb-3">' + previewTitle + '</h1>' +
+                                previewSummary +
+                                '<div>' + previewContent + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</body>' +
+        '</html>'
+    );
 }
 
 function showError(message) {

@@ -1,38 +1,73 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${blog.titleVi} - Blog Đặc sản</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+</head>
+<body>
+<jsp:include page="/WEB-INF/common/header.jsp"/>
 
 <!-- Hero Section with Blog Title -->
-<div class="hero-section mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 80px 40px; color: white; text-align: center; margin-top: 30px; position: relative; overflow: hidden;">
+<div class="blog-hero-section mb-5">
+    <div class="hero-background"></div>
     <div class="hero-pattern"></div>
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-8 mx-auto">
+            <div class="col-lg-10 mx-auto">
                 <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb justify-content-center bg-transparent p-0 m-0">
+                    <ol class="breadcrumb justify-content-center bg-white bg-opacity-20 backdrop-blur p-2 rounded-pill">
                         <li class="breadcrumb-item">
-                            <a href="<c:url value='/user/blogs'/>" class="text-white-50">Blog</a>
+                            <a href="<c:url value='/user/blogs'/>" class="text-white text-decoration-none">
+                                <i class="bi bi-house-door me-1"></i>Blog
+                            </a>
                         </li>
-                        <li class="breadcrumb-item active text-white">${blog.titleVi}</li>
+                        <li class="breadcrumb-item active text-white-50">
+                            <i class="bi bi-chevron-right me-1"></i>${blog.titleVi}
+                        </li>
                     </ol>
                 </nav>
-                <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInUp">${blog.titleVi}</h1>
-                <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">${blog.summaryVi}</p>
-                <div class="d-flex justify-content-center align-items-center gap-4 animate__animated animate__fadeInUp animate__delay-2s">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-person-circle me-2"></i>
-                        <span>${blog.authorName}</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-calendar me-2"></i>
-                        <span><fmt:formatDate value="${blog.createdAt}" pattern="dd/MM/yyyy"/></span>
-                    </div>
-                    <c:if test="${blog.updatedAt != null and blog.updatedAt != blog.createdAt}">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-pencil me-2"></i>
-                            <span>Cập nhật: <fmt:formatDate value="${blog.updatedAt}" pattern="dd/MM/yyyy"/></span>
+                <div class="hero-content text-center">
+                    <h1 class="blog-hero-title animate__animated animate__fadeInUp">${blog.titleVi}</h1>
+                    <p class="blog-hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">${blog.summaryVi}</p>
+                    <div class="blog-hero-meta animate__animated animate__fadeInUp animate__delay-2s">
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="meta-label">Tác giả</span>
+                                <span class="meta-value">${blog.authorName}</span>
+                            </div>
                         </div>
-                    </c:if>
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="meta-label">Ngày đăng</span>
+                                <span class="meta-value">${blog.formattedCreatedAt}</span>
+                            </div>
+                        </div>
+                        <c:if test="${blog.updatedAt != null and blog.updatedAt != blog.createdAt}">
+                            <div class="meta-item">
+                                <div class="meta-icon">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Cập nhật</span>
+                                    <span class="meta-value">${blog.formattedUpdatedAt}</span>
+                                </div>
+                            </div>
+                        </c:if>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,69 +95,73 @@
             <article class="blog-post animate__animated animate__fadeInUp">
                 <!-- Blog Image -->
                 <c:if test="${not empty blog.imageUrl}">
-                    <div class="mb-5">
-                        <div class="blog-image-container">
-                            <img src="${blog.imageUrl}" class="img-fluid rounded shadow-lg" alt="${blog.titleVi}"
-                                 style="width: 100%; max-height: 500px; object-fit: cover;">
-                            <div class="image-overlay"></div>
+                    <div class="blog-featured-image mb-5">
+                        <div class="image-frame">
+                            <img src="${blog.imageUrl}" class="img-fluid" alt="${blog.titleVi}">
+                            <div class="image-shine"></div>
                         </div>
                     </div>
                 </c:if>
 
                 <!-- Blog Content -->
-                <div class="blog-content mb-5">
-                    <div class="content-wrapper p-4 bg-white rounded shadow-sm">
-                        ${blog.contentVi}
-                    </div>
+                <div class="blog-content-wrapper mb-5">
+                    <article class="blog-article">
+                        <div class="article-content">
+                            ${blog.contentVi}
+                        </div>
+                    </article>
                 </div>
             </article>
 
             <!-- Related Products -->
             <c:if test="${not empty blog.products}">
-                <div class="card mb-4 shadow-sm animate__animated animate__fadeInUp animate__delay-1s">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-tag-fill me-2"></i>
-                            Sản phẩm liên quan (${blog.products.size()})
-                        </h5>
+                <div class="related-products-section mb-5">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="bi bi-tag-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title">Sản phẩm liên quan</h3>
+                            <p class="section-subtitle">${blog.products.size()} sản phẩm được đề cập trong bài viết</p>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <c:forEach var="product" items="${blog.products}">
-                                <div class="col-12">
-                                    <div class="product-item d-flex align-items-center p-3 border rounded hover-lift">
-                                        <div class="product-image me-3">
-                                            <c:if test="${not empty product.imageUrls && product.imageUrls.size() > 0}">
-                                                <img src="${product.imageUrls[0]}" alt="${product.nameVi}"
-                                                     class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                                            </c:if>
-                                            <c:if test="${empty product.imageUrls || product.imageUrls.size() == 0}">
-                                                <div class="bg-light rounded d-flex align-items-center justify-content-center"
-                                                     style="width: 60px; height: 60px;">
-                                                    <i class="bi bi-image text-muted"></i>
-                                                </div>
-                                            </c:if>
+                    <div class="products-grid">
+                        <c:forEach var="product" items="${blog.products}">
+                            <div class="product-card-modern">
+                                <div class="product-image-container">
+                                    <c:if test="${not empty product.imageUrls && product.imageUrls.size() > 0}">
+                                        <img src="${product.imageUrls[0]}" alt="${product.nameVi}" class="product-image">
+                                    </c:if>
+                                    <c:if test="${empty product.imageUrls || product.imageUrls.size() == 0}">
+                                        <div class="product-image-placeholder">
+                                            <i class="bi bi-image"></i>
                                         </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">
-                                                <a href="<c:url value='/user/products/${product.id}'/>" class="text-decoration-none text-dark fw-bold">
-                                                    ${product.nameVi}
-                                                </a>
-                                            </h6>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="badge bg-primary">${product.categoryNameVi}</span>
-                                                <span class="text-success fw-bold">
-                                                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <a href="<c:url value='/user/products/${product.id}'/>" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-eye me-1"></i>Xem
+                                    </c:if>
+                                    <div class="product-overlay">
+                                        <a href="<c:url value='/user/products/${product.id}'/>" class="btn btn-light btn-sm">
+                                            <i class="bi bi-eye me-1"></i>Xem chi tiết
                                         </a>
                                     </div>
                                 </div>
-                            </c:forEach>
-                        </div>
+                                <div class="product-info">
+                                    <h6 class="product-name">
+                                        <a href="<c:url value='/user/products/${product.id}'/>" class="text-decoration-none">
+                                            ${product.nameVi}
+                                        </a>
+                                    </h6>
+                                    <div class="product-meta">
+                                        <c:if test="${not empty product.categories}">
+                                            <c:forEach var="category" items="${product.categories}" begin="0" end="0">
+                                                <span class="product-category">${category}</span>
+                                            </c:forEach>
+                                        </c:if>
+                                        <span class="product-price">
+                                            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
             </c:if>
@@ -172,7 +211,7 @@
                         <i class="bi bi-calendar-event text-primary me-3 fs-5"></i>
                         <div>
                             <div class="fw-bold">
-                                <fmt:formatDate value="${blog.createdAt}" pattern="dd/MM/yyyy"/>
+                                ${blog.formattedCreatedAt}
                             </div>
                             <small class="text-muted">Ngày đăng</small>
                         </div>
@@ -221,10 +260,28 @@
 </div>
 
 <style>
-/* Hero Section */
-.hero-section {
+/* Modern Hero Section */
+.blog-hero-section {
     position: relative;
     overflow: hidden;
+    border-radius: 25px;
+    padding: 100px 40px;
+    margin-top: 30px;
+    color: white;
+    text-align: center;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 1;
 }
 
 .hero-pattern {
@@ -233,9 +290,11 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 30px 30px;
-    animation: float 15s infinite linear;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px);
+    background-size: 40px 40px;
+    animation: float 20s infinite linear;
+    z-index: 2;
+    opacity: 0.6;
 }
 
 @keyframes float {
@@ -243,151 +302,466 @@
     100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Blog Image */
-.blog-image-container {
+.hero-content {
     position: relative;
-    border-radius: 15px;
-    overflow: hidden;
+    z-index: 3;
 }
 
-.image-overlay {
+.blog-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    letter-spacing: -0.5px;
+}
+
+.blog-hero-subtitle {
+    font-size: 1.35rem;
+    margin-bottom: 40px;
+    opacity: 0.95;
+    line-height: 1.6;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.blog-hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+}
+
+.meta-item:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-3px);
+}
+
+.meta-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.meta-content {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.meta-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Featured Image */
+.blog-featured-image {
+    margin-bottom: 50px;
+}
+
+.image-frame {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    background: #f8f9fa;
+}
+
+.image-frame img {
+    width: 100%;
+    max-height: 550px;
+    object-fit: cover;
+    display: block;
+}
+
+.image-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.image-frame:hover .image-shine {
+    left: 100%;
+}
+
+/* Article Content */
+.blog-content-wrapper {
+    margin-bottom: 50px;
+}
+
+.blog-article {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.article-content {
+    max-width: 100%;
+}
+
+/* Related Products Section */
+.related-products-section {
+    margin-bottom: 50px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #667eea;
+}
+
+.section-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.section-subtitle {
+    color: #6c757d;
+    margin: 5px 0 0 0;
+    font-size: 0.95rem;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.product-card-modern {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.product-card-modern:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.product-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.product-image, .product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #adb5bd;
+}
+
+.product-card-modern:hover .product-image {
+    transform: scale(1.15);
+}
+
+.product-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.blog-image-container:hover .image-overlay {
+.product-card-modern:hover .product-overlay {
     opacity: 1;
 }
 
+.product-info {
+    padding: 20px;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.product-name a {
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.product-name a:hover {
+    color: #667eea;
+}
+
+.product-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.product-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    color: #667eea;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.product-price {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
 /* Blog Content */
-.blog-content {
-    line-height: 1.8;
+.article-content {
+    line-height: 1.9;
     font-size: 1.1rem;
     color: #2c3e50;
 }
 
-.content-wrapper {
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-}
-
-.blog-content img {
+.article-content img {
     max-width: 100%;
     height: auto;
-    border-radius: 12px;
-    margin: 2rem 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    margin: 2.5rem 0;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
     transition: transform 0.3s ease;
 }
 
-.blog-content img:hover {
+.article-content img:hover {
     transform: scale(1.02);
 }
 
-.blog-content p {
-    margin-bottom: 1.5rem;
-    font-size: 1.05rem;
+.article-content p {
+    margin-bottom: 1.8rem;
+    font-size: 1.1rem;
+    line-height: 1.9;
 }
 
-.blog-content h1,
-.blog-content h2,
-.blog-content h3,
-.blog-content h4,
-.blog-content h5,
-.blog-content h6 {
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
     color: #2c3e50;
-    margin-top: 2.5rem;
-    margin-bottom: 1.25rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
     font-weight: 700;
     line-height: 1.3;
 }
 
-.blog-content h1 { font-size: 2rem; border-bottom: 3px solid #667eea; padding-bottom: 0.5rem; }
-.blog-content h2 { font-size: 1.75rem; border-bottom: 2px solid #667eea; padding-bottom: 0.375rem; }
-.blog-content h3 { font-size: 1.5rem; color: #667eea; }
-.blog-content h4 { font-size: 1.25rem; color: #764ba2; }
-.blog-content h5 { font-size: 1.1rem; color: #5a67d8; }
-.blog-content h6 { font-size: 1rem; color: #6b46c1; }
-
-.blog-content blockquote {
-    border-left: 4px solid #667eea;
-    padding-left: 1.5rem;
-    margin: 2rem 0;
-    font-style: italic;
-    color: #555;
-    background: rgba(102, 126, 234, 0.05);
-    padding: 1.5rem;
-    border-radius: 0 8px 8px 0;
+.article-content h1 { 
+    font-size: 2.5rem; 
+    border-bottom: 4px solid #667eea; 
+    padding-bottom: 0.75rem;
     position: relative;
 }
 
-.blog-content blockquote::before {
+.article-content h1::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.article-content h2 { 
+    font-size: 2rem; 
+    border-bottom: 3px solid #667eea; 
+    padding-bottom: 0.5rem;
+}
+
+.article-content h3 { 
+    font-size: 1.75rem; 
+    color: #667eea;
+    border-left: 4px solid #667eea;
+    padding-left: 1rem;
+}
+
+.article-content h4 { 
+    font-size: 1.5rem; 
+    color: #764ba2; 
+}
+
+.article-content h5 { 
+    font-size: 1.25rem; 
+    color: #5a67d8; 
+}
+
+.article-content h6 { 
+    font-size: 1.1rem; 
+    color: #6b46c1; 
+}
+
+.article-content blockquote {
+    border-left: 5px solid #667eea;
+    padding: 2rem 2rem 2rem 3rem;
+    margin: 2.5rem 0;
+    font-style: italic;
+    color: #555;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    border-radius: 0 15px 15px 0;
+    position: relative;
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+.article-content blockquote::before {
     content: '"';
-    font-size: 4rem;
+    font-size: 5rem;
     color: #667eea;
     position: absolute;
     top: -10px;
-    left: 10px;
-    opacity: 0.3;
+    left: 15px;
+    opacity: 0.2;
+    font-family: Georgia, serif;
 }
 
-.blog-content ul, .blog-content ol {
-    padding-left: 2rem;
-    margin-bottom: 1.5rem;
+.article-content ul, .article-content ol {
+    padding-left: 2.5rem;
+    margin-bottom: 2rem;
 }
 
-.blog-content li {
-    margin-bottom: 0.5rem;
+.article-content li {
+    margin-bottom: 0.75rem;
+    line-height: 1.8;
 }
 
-.blog-content code {
-    background: rgba(102, 126, 234, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', monospace;
+.article-content code {
+    background: rgba(102, 126, 234, 0.12);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
     font-size: 0.9em;
+    color: #667eea;
+    font-weight: 500;
 }
 
-.blog-content pre {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 8px;
-    border-left: 4px solid #667eea;
+.article-content pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 5px solid #667eea;
     overflow-x: auto;
-    margin: 1.5rem 0;
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
-.blog-content table {
+.article-content pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.article-content table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1.5rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 8px;
+    margin: 2rem 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 12px;
     overflow: hidden;
 }
 
-.blog-content th,
-.blog-content td {
-    padding: 0.75rem;
+.article-content th,
+.article-content td {
+    padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.blog-content th {
+.article-content th {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
 
-.blog-content tr:nth-child(even) {
-    background: rgba(102, 126, 234, 0.02);
+.article-content tr:nth-child(even) {
+    background: rgba(102, 126, 234, 0.03);
+}
+
+.article-content tr:hover {
+    background: rgba(102, 126, 234, 0.08);
+    transition: background 0.3s ease;
 }
 
 /* Sidebar Cards */
@@ -439,41 +813,53 @@
     border-bottom: none;
 }
 
-/* Product Items */
-.product-item {
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.08) !important;
-}
-
-.product-item:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    border-color: #667eea !important;
-}
-
-.hover-lift {
-    transition: all 0.3s ease;
-}
-
-.hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
 
 /* Responsive */
 @media (max-width: 768px) {
-    .hero-section {
+    .blog-hero-section {
         padding: 60px 20px;
         margin-top: 20px;
+        min-height: 300px;
     }
 
-    .hero-section .display-4 {
+    .blog-hero-title {
         font-size: 2rem;
     }
+    
+    .blog-hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .blog-hero-meta {
+        gap: 15px;
+    }
+    
+    .meta-item {
+        padding: 10px 15px;
+    }
+    
+    .meta-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
 
-    .blog-content h1 { font-size: 1.75rem; }
-    .blog-content h2 { font-size: 1.5rem; }
-    .blog-content h3 { font-size: 1.25rem; }
+    .blog-article {
+        padding: 30px 20px;
+    }
+    
+    .article-content h1 { font-size: 1.75rem; }
+    .article-content h2 { font-size: 1.5rem; }
+    .article-content h3 { font-size: 1.25rem; }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 /* Animations */
@@ -496,10 +882,10 @@
 <script>
 // Delete blog confirmation
 function deleteBlog(blogId, title) {
-    if (confirm(`Bạn có chắc muốn xóa bài viết "${title}"?\n\nHành động này không thể hoàn tác.`)) {
+    if (confirm('Bạn có chắc muốn xóa bài viết "' + title + '"?\n\nHành động này không thể hoàn tác.')) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `<c:url value="/user/blogs/delete/"/>${blogId}`;
+        form.action = '<c:url value="/user/blogs/delete/"/>' + blogId;
 
         // Add CSRF token if needed
         const csrfInput = document.createElement('input');
@@ -545,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // Observe all content sections
-    document.querySelectorAll('.blog-content h1, .blog-content h2, .blog-content h3, .blog-content blockquote').forEach(el => {
+    document.querySelectorAll('.article-content h1, .article-content h2, .article-content h3, .article-content blockquote').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -553,3 +939,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<jsp:include page="/WEB-INF/common/footer.jsp"/>
+<jsp:include page="/WEB-INF/common/Toast.jsp"/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

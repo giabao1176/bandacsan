@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -25,4 +26,20 @@ public class BlogDTO {
     private List<ProductResponseDTO> products;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public String getFormattedCreatedAt() {
+        if (createdAt == null) {
+            return "";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return createdAt.format(formatter);
+    }
+
+    public String getFormattedUpdatedAt() {
+        if (updatedAt == null) {
+            return "";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return updatedAt.format(formatter);
+    }
 }
